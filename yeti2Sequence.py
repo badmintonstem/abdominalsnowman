@@ -29,12 +29,12 @@ ZB.SetCommsFailsafe(False)             # Disable the communications failsafe
 ZB.ResetEpo()
 
 # Movement settings (worked out from our YetiBorg v2 on a smooth surface)
-timeForward1m = 5.7                     # Number of seconds needed to move about 1 meter
-timeSpin360   = 4.8                     # Number of seconds needed to make a full left / right spin
+timeForward1m = 7.0                     # Number of seconds needed to move about 1 meter
+timeSpin360   = 7.0                     # Number of seconds needed to make a full left / right spin
 testMode = False                        # True to run the motion tests, False to run the normal sequence
 
 # Power settings
-voltageIn = 8.4                         # Total battery voltage to the ZeroBorg (change to 9V if using a non-rechargeable battery)
+voltageIn = 9.6                         # Total battery voltage to the ZeroBorg (change to 9V if using a non-rechargeable battery)
 voltageOut = 6.0                        # Maximum motor voltage
 
 # Setup the power limits

@@ -54,7 +54,7 @@ ZB.ResetEpo()
 ZB.SetLed(False)
 
 # Power settings
-voltageIn = 8.4                         # Total battery voltage to the ZeroBorg (change to 9V if using a non-rechargeable battery)
+voltageIn = 9.6                         # Total battery voltage to the ZeroBorg (change to 9V if using a non-rechargeable battery)
 voltageOut = 6.0                        # Maximum motor voltage
 
 # Setup the power limits

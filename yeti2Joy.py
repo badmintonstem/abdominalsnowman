@@ -42,17 +42,17 @@ ZB.ResetEpo()
 # Settings for the joystick
 axisUpDown = 1                          # Joystick axis to read for up / down position
 axisUpDownInverted = False              # Set this to True if up and down appear to be swapped
-axisLeftRight = 2                       # Joystick axis to read for left / right position
+axisLeftRight = 3                       # Joystick axis to read for left / right position
 axisLeftRightInverted = False           # Set this to True if left and right appear to be swapped
-buttonResetEpo = 3                      # Joystick button number to perform an EPO reset (Start)
-buttonSlow = 8                          # Joystick button number for driving slowly whilst held (L2)
-buttonBoost = 10                        # Joystick button number for speed boost whilst held (L1)
+buttonResetEpo = 9                      # Joystick button number to perform an EPO reset (Start)
+buttonSlow = 4                          # Joystick button number for driving slowly whilst held (L2)
+buttonBoost = 11                        # Joystick button number for speed boost whilst held (L1)
 slowFactor = 0.5                        # Speed to slow to when the drive slowly button is held, e.g. 0.5 would be half speed
-buttonFastTurn = 9                      # Joystick button number for turning fast (R2)
+buttonFastTurn = 5                      # Joystick button number for turning fast (R2)
 interval = 0.00                         # Time between updates in seconds, smaller responds faster but uses more processor time
 
 # Power settings
-voltageIn = 8.4                         # Total battery voltage to the ZeroBorg (change to 9V if using a non-rechargeable battery)
+voltageIn = 9.6                         # Total battery voltage to the ZeroBorg (change to 9V if using a non-rechargeable battery)
 voltageOut = 6.0                        # Maximum motor voltage
 
 # Setup the power limits
