@@ -43,7 +43,7 @@ if voltageOut > voltageIn:
 else:
     maxPower = voltageOut / float(voltageIn)
     
-
+maxPower = 1.0/maxPower
 
 # Function to perform a general movement
 def PerformMove(driveLeft, driveRight, numSeconds):
