@@ -44,46 +44,26 @@ else:
     maxPower = voltageOut / float(voltageIn)
 
 # Function to perform a general movement
-def PerformMove(driveLeft, driveRight, numSeconds):
+def PerformMove(driveLeft, driveRight):
     # Set the motors running
     ZB.SetMotor1(-driveRight * maxPower) # Rear right
     ZB.SetMotor2(-driveRight * maxPower) # Front right
     ZB.SetMotor3(-driveLeft  * maxPower) # Front left
     ZB.SetMotor4(-driveLeft  * maxPower) # Rear left
-    # Wait for the time
-    time.sleep(numSeconds)
     # Turn the motors off
     ZB.MotorsOff()
 
-# Function to spin an angle in degrees
-def PerformSpin(angle):
-    if angle < 0.0:
-        # Left turn
-        driveLeft  = -1.0
-        driveRight = +1.0
-        angle *= -1
-    else:
-        # Right turn
-        driveLeft  = +1.0
-        driveRight = -1.0
-    # Calculate the required time delay
-    numSeconds = (angle / 360.0) * timeSpin360
-    # Perform the motion
-    PerformMove(driveLeft, driveRight, numSeconds)
+rightSensor = 0
+middleSensor = 0
+leftSensor = 0
 
-# Function to drive a distance in meters
-def PerformDrive(meters):
-    if meters < 0.0:
-        # Reverse drive
-        driveLeft  = -1.0
-        driveRight = -1.0
-        meters *= -1
+while True:
+    if rightSensor == 1:
+        PerformMove(1, 0.5)
+    elif leftSensor == 1:
+        PerformMove(0.5, 1)
+    elif rightSensor == 1 AND leftSensor ==1:
+        panic() 
     else:
-        # Forward drive
-        driveLeft  = +1.0
-        driveRight = +1.0
-    # Calculate the required time delay
-    numSeconds = meters * timeForward1m
-    # Perform the motion
-    PerformMove(driveLeft, driveRight, numSeconds)
+        PerformMove(1, 1)
 
