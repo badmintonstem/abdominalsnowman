@@ -8,6 +8,7 @@ import ZeroBorg
 import time
 import math
 import sys
+from gpiozero import LineSensor
 
 # Setup the ZeroBorg
 ZB = ZeroBorg.ZeroBorg()
@@ -53,17 +54,44 @@ def PerformMove(driveLeft, driveRight):
     # Turn the motors off
     ZB.MotorsOff()
 
-rightSensor = 0
-middleSensor = 0
-leftSensor = 0
+rightSensor = LineSensor(17,active_state=False)
+middleSensor = LineSensor(27,active_state=False)
+leftSensor = LineSensor(22,active_state=False)
+
+
+direction = ""
 
 while True:
-    if rightSensor == 1:
-        PerformMove(1, 0.5)
-    elif leftSensor == 1:
-        PerformMove(0.5, 1)
-    elif rightSensor == 1 AND leftSensor ==1:
-        panic() 
-    else:
-        PerformMove(1, 1)
+    right_detect = int(rightSensor.value)
+    middle_detect = int(middleSensor.value)
+    left_detect = int(leftSensor.value)
 
+    if right_detect == 1:
+        PerformMove(1, 0.5)
+        direction = "right"
+    elif left_detect == 1:
+        PerformMove(0.5, 1)
+        direction = "left"
+    elif right_detect == 1 AND left_detect ==1:
+        panic() 
+    elif middle_detect == 1:
+        PerformMove(1, 1)
+    elif right_detect == 0 AND left_detect == 0 AND middle_detect == 1:
+        rabbit(direction) 
+
+
+def rabbit(lastDirection):
+    while middle_detect == 0:
+        if lastDirection == "left":
+            PerformMove(-1,1)
+	elif lastDirection == "right":
+            PerformMove(1,-1)
+
+def panic():
+    for i in range(5):
+        PerformMove(1,-1)
+        PerformMove(1,1)
+        PerformMove(1,-1)
+        PerformMove(1,1)
+        PerformMove(1,-1)
+    
