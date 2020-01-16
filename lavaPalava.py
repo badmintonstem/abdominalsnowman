@@ -52,7 +52,10 @@ def PerformMove(driveLeft, driveRight):
     ZB.SetMotor3(-driveLeft  * maxPower) # Front left
     ZB.SetMotor4(-driveLeft  * maxPower) # Rear left
     # Turn the motors off
-    ZB.MotorsOff()
+    #ZB.MotorsOff()
+
+def PerformStop():
+    PerfomMove(0,0)
 
 rightSensor = LineSensor(17,pull_up=None,active_state=False)
 middleSensor = LineSensor(27,pull_up=None,active_state=False)
@@ -61,31 +64,44 @@ leftSensor = LineSensor(22,pull_up=None,active_state=False)
 
 direction = ""
 
+def rabbit(lastDirection):
+    global middle_detect
+    while middle_detect == 0:
+        if lastDirection == "left":
+            PerformMove(-1,1)
+        if lastDirection == "right":
+            PerformMove(1,-1)
+        middle_detect = int(middleSensor.value)
+
 while True:
     right_detect = int(rightSensor.value)
     middle_detect = int(middleSensor.value)
     left_detect = int(leftSensor.value)
-
-    if right_detect == 1:
-        PerformMove(1, 0.5)
+    if right_detect == 1 and left_detect == 1 and middle_detect == 1:
+        PerformMove(0,0)
+        print "Stop!"
+    elif right_detect == 1 and middle_detect == 0 and left_detect == 0:
+        PerformMove(1,0.2)
+        print "Turn Right!"
         direction = "right"
-    elif left_detect == 1:
-        PerformMove(0.5, 1)
+    elif left_detect == 1 and middle_detect == 0 and right_detect == 0:
+        PerformMove(0.2,1)
+        print "Turn Left!"
         direction = "left"
-    elif (right_detect == 1 and left_detect ==1):
-        panic() 
-    elif middle_detect == 1:
-        PerformMove(1, 1)
-    elif (right_detect == 0 and left_detect == 0 and middle_detect == 1):
-        rabbit(direction) 
+    elif middle_detect == 1 and left_detect == 0 and right_detect == 0:
+        print "Forward!"
+        PerformMove(1,1)
+    elif (right_detect == 0 and left_detect == 0 and middle_detect == 0):
+        print "find the line! Spin to the %s" % (direction)
+        rabbit(direction)
 
 
-def rabbit(lastDirection):
-    while middle_detect == 0:
-        if lastDirection == "left":
-            PerformMove(-1,1)
-	elif lastDirection == "right":
-            PerformMove(1,-1)
+#def rabbit(lastDirection):
+#    while middle_detect == 0:
+#        if lastDirection == "left":
+#            PerformMove(-1,1)
+#	elif lastDirection == "right":
+#            PerformMove(1,-1)
 
 def panic():
     for i in range(5):
