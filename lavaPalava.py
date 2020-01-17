@@ -17,13 +17,13 @@ ZB.Init()
 if not ZB.foundChip:
     boards = ZeroBorg.ScanForZeroBorg()
     if len(boards) == 0:
-        print 'No ZeroBorg found, check you are attached :)'
+        print('No ZeroBorg found, check you are attached :)')
     else:
-        print 'No ZeroBorg at address %02X, but we did find boards:' % (ZB.i2cAddress)
+        print('No ZeroBorg at address %02X, but we did find boards:' % (ZB.i2cAddress))
         for board in boards:
-            print '    %02X (%d)' % (board, board)
-        print 'If you need to change the I²C address change the setup line so it is correct, e.g.'
-        print 'ZB.i2cAddress = 0x%02X' % (boards[0])
+            print('    %02X (%d)' % (board, board))
+        print('If you need to change the I²C address change the setup line so it is correct, e.g.')
+        print('ZB.i2cAddress = 0x%02X' % (boards[0]))
     sys.exit()
 #ZB.SetEpoIgnore(True)                 # Uncomment to disable EPO latch, needed if you do not have a switch / jumper
 ZB.SetCommsFailsafe(False)             # Disable the communications failsafe
@@ -79,20 +79,24 @@ while True:
     left_detect = int(leftSensor.value)
     if right_detect == 1 and left_detect == 1 and middle_detect == 1:
         PerformMove(0,0)
-        print "Stop!"
+        #print "Stop!"
     elif right_detect == 1 and middle_detect == 0 and left_detect == 0:
         PerformMove(1,0.2)
-        print "Turn Right!"
+        #print "Turn Right!"
         direction = "right"
     elif left_detect == 1 and middle_detect == 0 and right_detect == 0:
         PerformMove(0.2,1)
-        print "Turn Left!"
+        #print "Turn Left!"
         direction = "left"
     elif middle_detect == 1 and left_detect == 0 and right_detect == 0:
-        print "Forward!"
+        #print "Forward!"
         PerformMove(1,1)
+    elif middle_detect == 1 and left_detect == 1 and right_detect ==0:
+        PerformMove(0.8,1)
+    elif middle_detect == 1 and right_detect == 1 and left_detect ==0:
+        PerformMove(1,0.8)
     elif (right_detect == 0 and left_detect == 0 and middle_detect == 0):
-        print "find the line! Spin to the %s" % (direction)
+        #print "find the line! Spin to the %s" % (direction)
         rabbit(direction)
 
 
@@ -100,7 +104,7 @@ while True:
 #    while middle_detect == 0:
 #        if lastDirection == "left":
 #            PerformMove(-1,1)
-#	elif lastDirection == "right":
+#   elif lastDirection == "right":
 #            PerformMove(1,-1)
 
 def panic():
