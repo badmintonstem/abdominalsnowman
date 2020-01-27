@@ -86,6 +86,42 @@ pygame.init()
 pygame.display.set_mode((1,1))
 print 'waiting for joystick... (press CTRL+C to abort)'
 
+
+def line_follow():
+    while True:
+        right_detect = int(rightSensor.value)
+        middle_detect = int(middleSensor.value)
+        left_detect = int(leftSensor.value)
+        if right_detect == 1 and left_detect == 1 and middle_detect == 1:
+            PerformMove(0,0)
+            #print "Stop!"
+        elif right_detect == 1 and middle_detect == 0 and left_detect == 0:
+            PerformMove(1,0.2)
+            #print "Turn Right!"
+            direction = "right"
+        elif left_detect == 1 and middle_detect == 0 and right_detect == 0:
+            PerformMove(0.2,1)
+            #print "Turn Left!"
+            direction = "left"
+        elif middle_detect == 1 and left_detect == 0 and right_detect == 0:
+            #print "Forward!"
+            PerformMove(1,1)
+        elif middle_detect == 1 and left_detect == 1 and right_detect ==0:
+            PerformMove(0.8,1)
+        elif middle_detect == 1 and right_detect == 1 and left_detect ==0:
+            PerformMove(1,0.8)
+        elif (right_detect == 0 and left_detect == 0 and middle_detect == 0):
+            #print "find the line! Spin to the %s" % (direction)
+            rabbit(direction)
+
+def panic():
+    for i in range(5):
+        PerformMove(1,-1)
+        PerformMove(1,1)
+        PerformMove(1,-1)
+        PerformMove(1,1)
+        PerformMove(1,-1)
+
 while True:
     try:
         try:
@@ -139,39 +175,3 @@ except KeyboardInterrupt:
     # CTRL+C exit diable all drives
     ZB.MotorsOff()
 
-
-def line_follow():
-    while True:
-        right_detect = int(rightSensor.value)
-        middle_detect = int(middleSensor.value)
-        left_detect = int(leftSensor.value)
-        if right_detect == 1 and left_detect == 1 and middle_detect == 1:
-            PerformMove(0,0)
-            #print "Stop!"
-        elif right_detect == 1 and middle_detect == 0 and left_detect == 0:
-            PerformMove(1,0.2)
-            #print "Turn Right!"
-            direction = "right"
-        elif left_detect == 1 and middle_detect == 0 and right_detect == 0:
-            PerformMove(0.2,1)
-            #print "Turn Left!"
-            direction = "left"
-        elif middle_detect == 1 and left_detect == 0 and right_detect == 0:
-            #print "Forward!"
-            PerformMove(1,1)
-        elif middle_detect == 1 and left_detect == 1 and right_detect ==0:
-            PerformMove(0.8,1)
-        elif middle_detect == 1 and right_detect == 1 and left_detect ==0:
-            PerformMove(1,0.8)
-        elif (right_detect == 0 and left_detect == 0 and middle_detect == 0):
-            #print "find the line! Spin to the %s" % (direction)
-            rabbit(direction)
-
-def panic():
-    for i in range(5):
-        PerformMove(1,-1)
-        PerformMove(1,1)
-        PerformMove(1,-1)
-        PerformMove(1,1)
-        PerformMove(1,-1)
-    
