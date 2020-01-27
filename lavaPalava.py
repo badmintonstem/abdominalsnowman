@@ -10,6 +10,7 @@ import math
 import sys
 from gpiozero import LineSensor
 import pygame
+import os
 
 sys.stdout = sys.stderr
 
@@ -38,6 +39,7 @@ timeSpin360   = 7.0                     # Number of seconds needed to make a ful
 #testMode = False                        # True to run the motion tests, False to run the normal sequence
 
 buttonStartTest = 2			#Button to start the Test (triangle)
+interval = 0.01
 
 # Power settings
 voltageIn = 9.6                         # Total battery voltage to the ZeroBorg (change to 9V if using a non-rechargeable battery)
@@ -81,7 +83,8 @@ def rabbit(lastDirection):
 ZB.MotorsOff()
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 pygame.init()
-print 'waiting for joystick... (press CTRL+C to abort)
+pygame.display.set_mode((1,1))
+print 'waiting for joystick... (press CTRL+C to abort)'
 
 while True:
     try:
@@ -104,8 +107,7 @@ while True:
             time.sleep(0.1)
     except KeyboardInterrupt:
         # CTRL+C exit, give up
-        print '
-User aborted'
+        print 'User aborted'
         ZB.SetLed(True)
         sys.exit()
 print 'Joystick found'
@@ -116,7 +118,7 @@ try:
     print('Press CTRL+C to quit')
     running = True
     hadEvent = False
-    while running
+    while running:
         #get the latest events
         hadEvent = False
         events = pygame.event.get()
@@ -136,7 +138,8 @@ try:
 except KeyboardInterrupt:
     # CTRL+C exit diable all drives
     ZB.MotorsOff()
-                    
+
+
 def line_follow():
     while True:
         right_detect = int(rightSensor.value)
