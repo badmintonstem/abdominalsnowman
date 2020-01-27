@@ -9,6 +9,9 @@ import time
 import math
 import sys
 from gpiozero import LineSensor
+import pygame
+
+sys.stdout = sys.stderr
 
 # Setup the ZeroBorg
 ZB = ZeroBorg.ZeroBorg()
@@ -32,7 +35,9 @@ ZB.ResetEpo()
 # Movement settings (worked out from our YetiBorg v2 on a smooth surface)
 timeForward1m = 7.0                     # Number of seconds needed to move about 1 meter
 timeSpin360   = 7.0                     # Number of seconds needed to make a full left / right spin
-testMode = False                        # True to run the motion tests, False to run the normal sequence
+#testMode = False                        # True to run the motion tests, False to run the normal sequence
+
+buttonStartTest = 2			#Button to start the Test (triangle)
 
 # Power settings
 voltageIn = 9.6                         # Total battery voltage to the ZeroBorg (change to 9V if using a non-rechargeable battery)
@@ -72,6 +77,58 @@ def rabbit(lastDirection):
         if lastDirection == "right":
             PerformMove(1,-1)
         middle_detect = int(middleSensor.value)
+
+ZB.MotorsOff()
+os.environ["SDL_VIDEODRIVER"] = "dummy"
+pygame.init()
+print 'waiting for joystick... (press CTRL+C to abort)
+
+while True:
+    try:
+        try:
+            pygame.joystick.init()
+            # Attempt to setup the joystick
+            if pygame.joystick.get_count() < 1:
+                # No joystick attached, toggle the LED
+                ZB.SetLed(not ZB.GetLed())
+                pygame.joystick.quit()
+                time.sleep(0.1)
+            else:
+                # We have a joystick, attempt to initialise it!
+                joystick = pygame.joystick.Joystick(0)
+                break
+        except pygame.error:
+            # Failed to connect to the joystick, toggle the LED
+            ZB.SetLed(not ZB.GetLed())
+            pygame.joystick.quit()
+            time.sleep(0.1)
+    except KeyboardInterrupt:
+        # CTRL+C exit, give up
+        print '
+User aborted'
+        ZB.SetLed(True)
+        sys.exit()
+print 'Joystick found'
+joystick.init()
+ZB.SetLed(False)
+
+try:
+    print('Press CTRL+C to quit')
+    running = True
+    hadEvent = False
+    while running
+        #get the latest events
+        hadEvent = False
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+            # User exit
+                ZB.MotorsOff()
+                running = False
+            elif event.type == pygame.JOYBUTTONDOWN:
+                hadEvent = True
+            if hadEvent:
+                if joystick.get_button(
 
 while True:
     right_detect = int(rightSensor.value)
