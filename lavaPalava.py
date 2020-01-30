@@ -38,7 +38,7 @@ timeForward1m = 7.0                     # Number of seconds needed to move about
 timeSpin360   = 7.0                     # Number of seconds needed to make a full left / right spin
 #testMode = False                        # True to run the motion tests, False to run the normal sequence
 
-buttonStartTest = 2			#Button to start the Test (triangle)
+triangle = 2	              		#Button to start the Test (triangle)
 interval = 0.01
 
 # Power settings
@@ -72,13 +72,26 @@ leftSensor = LineSensor(22,pull_up=None,active_state=False)
 direction = ""
 
 def rabbit(lastDirection):
-    global middle_detect
+    middle_detect = int(middleSensor.value)
+    hadEvent = False
+    events = pygame.event.get()
     while middle_detect == 0:
         if lastDirection == "left":
             PerformMove(-1,1)
         if lastDirection == "right":
             PerformMove(1,-1)
+        if lastDirection == "straight":
+            PerformMove(1,1)
         middle_detect = int(middleSensor.value)
+    for event in events:
+        if event.type == pygame.JOYBUTTONDOWN:
+            hadEvent = True
+        if hadEvent:
+            if hadEvent:
+                if joystick.get_button(triangle):
+                    print("Triangle Pressed!")
+                    ZB.MotorsOff()
+                    break
 
 ZB.MotorsOff()
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -86,12 +99,15 @@ pygame.init()
 pygame.display.set_mode((1,1))
 print 'waiting for joystick... (press CTRL+C to abort)'
 
-
 def line_follow():
-    while True:
+    driving = True
+    while driving:
+        direction = "straight"
+        hadEvent = False
         right_detect = int(rightSensor.value)
         middle_detect = int(middleSensor.value)
         left_detect = int(leftSensor.value)
+        events = pygame.event.get()
         if right_detect == 1 and left_detect == 1 and middle_detect == 1:
             PerformMove(0,0)
             #print "Stop!"
@@ -106,13 +122,26 @@ def line_follow():
         elif middle_detect == 1 and left_detect == 0 and right_detect == 0:
             #print "Forward!"
             PerformMove(1,1)
+            direction = "straight"
         elif middle_detect == 1 and left_detect == 1 and right_detect ==0:
             PerformMove(0.8,1)
+            direction = "left"
         elif middle_detect == 1 and right_detect == 1 and left_detect ==0:
             PerformMove(1,0.8)
+            direction = "right"
         elif (right_detect == 0 and left_detect == 0 and middle_detect == 0):
             #print "find the line! Spin to the %s" % (direction)
             rabbit(direction)
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.JOYBUTTONDOWN:
+                hadEvent = True
+                print("EVENT!")
+            if hadEvent:
+                if joystick.get_button(triangle):
+                    print("Triangle Pressed!")
+                    ZB.MotorsOff()
+                    driving = False
 
 def panic():
     for i in range(5):
@@ -166,7 +195,7 @@ try:
             elif event.type == pygame.JOYBUTTONDOWN:
                 hadEvent = True
             if hadEvent:
-                if joystick.get_button(buttonStartTest):
+                if joystick.get_button(triangle):
                     line_follow()
         ZB.SetLed(ZB.GetEpo())
         time.sleep(interval)
