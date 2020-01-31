@@ -26,7 +26,7 @@ if not ZB.foundChip:
         print('No ZeroBorg at address %02X, but we did find boards:' % (ZB.i2cAddress))
         for board in boards:
             print('    %02X (%d)' % (board, board))
-        print('If you need to change the I²C address change the setup line so it is correct, e.g.')
+        print('If you need to change the IÂ²C address change the setup line so it is correct, e.g.')
         print('ZB.i2cAddress = 0x%02X' % (boards[0]))
     sys.exit()
 #ZB.SetEpoIgnore(True)                 # Uncomment to disable EPO latch, needed if you do not have a switch / jumper
@@ -68,9 +68,6 @@ rightSensor = LineSensor(17,pull_up=None,active_state=False)
 middleSensor = LineSensor(27,pull_up=None,active_state=False)
 leftSensor = LineSensor(22,pull_up=None,active_state=False)
 
-
-direction = ""
-
 def rabbit(lastDirection):
     middle_detect = int(middleSensor.value)
     hadEvent = False
@@ -83,15 +80,14 @@ def rabbit(lastDirection):
         if lastDirection == "straight":
             PerformMove(1,1)
         middle_detect = int(middleSensor.value)
-    for event in events:
-        if event.type == pygame.JOYBUTTONDOWN:
-            hadEvent = True
-        if hadEvent:
-            if hadEvent:
-                if joystick.get_button(triangle):
-                    print("Triangle Pressed!")
-                    ZB.MotorsOff()
-                    break
+        for event in events:
+            if event.type == pygame.JOYBUTTONDOWN:
+                hadEvent = True
+                if hadEvent:
+                    if joystick.get_button(triangle):
+                        print("Triangle Pressed!")
+                        ZB.MotorsOff()
+                        break
 
 ZB.MotorsOff()
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -101,8 +97,8 @@ print 'waiting for joystick... (press CTRL+C to abort)'
 
 def line_follow():
     driving = True
+    direction = "straight"
     while driving:
-        direction = "straight"
         hadEvent = False
         right_detect = int(rightSensor.value)
         middle_detect = int(middleSensor.value)
