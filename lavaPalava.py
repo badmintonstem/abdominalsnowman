@@ -43,7 +43,7 @@ interval = 0.01
 
 # Power settings
 voltageIn = 9.6                         # Total battery voltage to the ZeroBorg (change to 9V if using a non-rechargeable battery)
-voltageOut = 6.0                        # Maximum motor voltage
+voltageOut = 9.6                        # Maximum motor voltage
 
 # Setup the power limits
 if voltageOut > voltageIn:
@@ -74,20 +74,20 @@ def rabbit(lastDirection):
     events = pygame.event.get()
     while middle_detect == 0:
         if lastDirection == "left":
-            PerformMove(-1,1)
+            PerformMove(-0.8,0.8)
         if lastDirection == "right":
-            PerformMove(1,-1)
-        if lastDirection == "straight":
-            PerformMove(1,1)
+            PerformMove(0.8,-.8)
+        #if lastDirection == "straight":
+        #    PerformMove(1,1)
         middle_detect = int(middleSensor.value)
-        for event in events:
-            if event.type == pygame.JOYBUTTONDOWN:
-                hadEvent = True
-                if hadEvent:
-                    if joystick.get_button(triangle):
-                        print("Triangle Pressed!")
-                        ZB.MotorsOff()
-                        break
+        #for event in events:
+        #    if event.type == pygame.JOYBUTTONDOWN:
+        #        hadEvent = True
+        #        if hadEvent:
+        #            if joystick.get_button(triangle):
+        #                print("Triangle Pressed!")
+        #                ZB.MotorsOff()
+        #                break
 
 ZB.MotorsOff()
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -103,41 +103,45 @@ def line_follow():
         right_detect = int(rightSensor.value)
         middle_detect = int(middleSensor.value)
         left_detect = int(leftSensor.value)
-        events = pygame.event.get()
+#        print right_detect
+#        print middle_detect
+#        print right_detect
         if right_detect == 1 and left_detect == 1 and middle_detect == 1:
             PerformMove(0,0)
-            #print "Stop!"
+#            print "Stop!"
         elif right_detect == 1 and middle_detect == 0 and left_detect == 0:
             PerformMove(1,0.2)
-            #print "Turn Right!"
+#            print "Turn Right!"
             direction = "right"
         elif left_detect == 1 and middle_detect == 0 and right_detect == 0:
             PerformMove(0.2,1)
-            #print "Turn Left!"
+#            print "Turn Left!"
             direction = "left"
         elif middle_detect == 1 and left_detect == 0 and right_detect == 0:
-            #print "Forward!"
+#            print "Forward!"
             PerformMove(1,1)
-            direction = "straight"
+            #direction = "straight"
         elif middle_detect == 1 and left_detect == 1 and right_detect ==0:
+            print "Slight left"
             PerformMove(0.8,1)
             direction = "left"
         elif middle_detect == 1 and right_detect == 1 and left_detect ==0:
+            print "Slight right"
             PerformMove(1,0.8)
             direction = "right"
         elif (right_detect == 0 and left_detect == 0 and middle_detect == 0):
-            #print "find the line! Spin to the %s" % (direction)
+            print "find the line! Spin to the %s" % (direction)
             rabbit(direction)
-        events = pygame.event.get()
-        for event in events:
-            if event.type == pygame.JOYBUTTONDOWN:
-                hadEvent = True
-                print("EVENT!")
-            if hadEvent:
-                if joystick.get_button(triangle):
-                    print("Triangle Pressed!")
-                    ZB.MotorsOff()
-                    driving = False
+        #events = pygame.event.get()
+        #for event in events:
+        #    if event.type == pygame.JOYBUTTONDOWN:
+        #        hadEvent = True
+        #        print("EVENT!")
+        #    if hadEvent:
+        #        if joystick.get_button(triangle):
+        #            print("Triangle Pressed!")
+        #            ZB.MotorsOff()
+        #            driving = False
 
 def panic():
     for i in range(5):
@@ -175,6 +179,14 @@ print 'Joystick found'
 joystick.init()
 ZB.SetLed(False)
 
+#PerformMove(0.5,0.5)
+#time.sleep(0.2)
+#PerformMove(0,0)
+#time.sleep(0.2)
+#PerformMove(-0.5,-0.5)
+#time.sleep(0.2)
+#PerformMove(0,0)
+
 try:
     print('Press CTRL+C to quit')
     running = True
@@ -192,6 +204,7 @@ try:
                 hadEvent = True
             if hadEvent:
                 if joystick.get_button(triangle):
+                    print("Button pressed")
                     line_follow()
         ZB.SetLed(ZB.GetEpo())
         time.sleep(interval)
